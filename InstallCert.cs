@@ -7,7 +7,7 @@ namespace AddCertToRootStore {
         String file = @"rootCA.pem";
         if (args.Length >0)
         {
-            file = args[1];
+            file = args[0];
         }
         X509Store store = new X509Store (StoreName.Root,
                          StoreLocation.CurrentUser);
@@ -19,10 +19,17 @@ namespace AddCertToRootStore {
             //Console.WriteLine ("The certificate already exists");
         }else{
             //Console.WriteLine ("The certificate will be added to the Root...");
-            store.Add (cert);
+            try{
+				store.Add (cert);				
+			}catch(Exception e){
+				Console.Error.WriteLine(e.Message);
+				Environment.Exit(1);
+				System.Windows.Forms.Application.Exit();
+			}
         }
         store.Close ();
-        System.Environment.Exit(0);
+		Environment.Exit(0);
+        System.Windows.Forms.Application.Exit();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace AddCertToRootStore {
             String file = @"rootCA.pem";
             if (args.Length >0)
             {
-                file = args[1];
+                file = args[0];
             }
             X509Store store = new X509Store (StoreName.Root,
                                              StoreLocation.CurrentUser);
@@ -17,12 +17,20 @@ namespace AddCertToRootStore {
             byte[] encodedCert = cert.GetRawCertData();
             if (store.Certificates.Contains(cert)){
                 //Console.WriteLine ("The certificate will be removed");
-                store.Remove (cert);
+                try{
+					store.Remove (cert);			
+				}catch(Exception e){
+					Console.Error.WriteLine(e.Message);
+					Environment.Exit(1);
+					System.Windows.Forms.Application.Exit();
+				}
+				
             }else{
                 //Console.WriteLine ("The certificate is not installed");
             }
             store.Close ();
-            System.Environment.Exit(0);
+			Environment.Exit(0);
+            System.Windows.Forms.Application.Exit();
         }
     }
 }
